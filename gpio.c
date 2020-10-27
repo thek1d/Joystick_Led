@@ -25,19 +25,19 @@ static void gpio_writeToRegister 				(GPIO_HANDLER_LED_t *handler_led, GPIO_HAND
 static void gpio_readFromRegister				(GPIO_HANDLER_JOYSTICK_t *handler_joy)
 {
 	handler_joy->input.valueUp 	   =
-			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.up)) == HIGH ? IS_PRESSED : !IS_PRESSED;
+			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.up)) != LOW ? IS_PRESSED : !IS_PRESSED;
 
 	handler_joy->input.valueDown   =
-			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.down)) == HIGH ? IS_PRESSED : !IS_PRESSED;
+			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.down)) != LOW ? IS_PRESSED : !IS_PRESSED;
 
 	handler_joy->input.valueLeft   =
-			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.left)) == HIGH ? IS_PRESSED : !IS_PRESSED;
+			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.left)) != LOW ? IS_PRESSED : !IS_PRESSED;
 
 	handler_joy->input.valueRight  =
-			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.right)) == HIGH ? IS_PRESSED : !IS_PRESSED;
+			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.right)) != LOW ? IS_PRESSED : !IS_PRESSED;
 
 	handler_joy->input.valueCenter =
-			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.center)) == HIGH ? IS_PRESSED : !IS_PRESSED;
+			(READ_PIN_REGISTER(handler_joy->_register, handler_joy->pin.center)) != LOW ? IS_PRESSED : !IS_PRESSED;
 }
 
 static void gpio_writeLed	     				(GPIO_HANDLER_LED_t *handler_led)
@@ -91,17 +91,16 @@ static void gpio_selectPulldownResistorsJoystick(GPIO_HANDLER_JOYSTICK_t *handle
 static void gpio_writeConfig				 	(GPIO_HANDLER_JOYSTICK_t *handler_joy)
 {
 	// ToDO  GPIO_HANDLER_LED_t *handler_led
-	*((uint16_t*)(handler_joy->_register)) |= ( ( (handler_joy->bit.up)     << (handler_joy->pin.up     ) )|
-												( (handler_joy->bit.down)   << (handler_joy->pin.down   ) )|
-												( (handler_joy->bit.left)   << (handler_joy->pin.left   ) )|
-												( (handler_joy->bit.right)  << (handler_joy->pin.right  ) )|
-												( (handler_joy->bit.center) << (handler_joy->pin.center ) )
-											   );
+	STORE_TO_REGISTER(handler_joy->_register) |= ( ( (handler_joy->bit.up)     << (handler_joy->pin.up     *2) )|
+												   ( (handler_joy->bit.down)   << (handler_joy->pin.down   *2) )|
+												   ( (handler_joy->bit.left)   << (handler_joy->pin.left   *2) )|
+												   ( (handler_joy->bit.right)  << (handler_joy->pin.right  *2) )|
+												   ( (handler_joy->bit.center) << (handler_joy->pin.center *2) )
+											      );
 }
 
-static void gpio_prepareWriteConfig				(GPIO_HANDLER_JOYSTICK_t *handler_joy)
+static void gpio_prepareWriteConfig				(GPIO_HANDLER_JOYSTICK_t *handler_joy, uint8_t resetValue)
 {
-	uint8_t resetValue = 0x02;
 
 	//multiply by 2 for alignment
 	STORE_TO_REGISTER(handler_joy->_register) &=  ~( ( (resetValue) << (handler_joy->pin.center * 2) )|
@@ -111,21 +110,6 @@ static void gpio_prepareWriteConfig				(GPIO_HANDLER_JOYSTICK_t *handler_joy)
 													 ( (resetValue) << (handler_joy->pin.down   * 2) )
 
 											       );
-
-//	-------------------------------test------------------------------------
-//	uint16_t temp = ~( ( (resetValue) << (handler_joy->pin.center * 2) )|
-//			 ( (resetValue) << (handler_joy->pin.left   * 2) )|
-//			 ( (resetValue) << (handler_joy->pin.right  * 2) )|
-//			 ( (resetValue) << (handler_joy->pin.up     * 2) )|
-//			 ( (resetValue) << (handler_joy->pin.down   * 2) )
-//
-//	       );
-//
-//	uint16_t *temp_address = ((uint16_t *)handler_joy->_register);
-//
-//	uint16_t valueOfPUPDR = ~(*temp_address & temp);
-//
-//	*temp_address =  valueOfPUPDR;
 
 }
 
@@ -179,10 +163,10 @@ void 		gpio_initJoystick    (GPIO_HANDLER_JOYSTICK_t *handler_joy)
 
 	gpio_pinMappingJoystick				(handler_joy);
 	gpio_configIOJoystick  				(handler_joy);				// Set data direction
-	gpio_prepareWriteConfig				(handler_joy);
+	gpio_prepareWriteConfig				(handler_joy, MODER_RESET_VALUE_OUTPUT);
 	gpio_writeConfig   					(handler_joy);
 	gpio_selectPulldownResistorsJoystick(handler_joy);
-	gpio_prepareWriteConfig				(handler_joy);				// Set pulldown resistors
+	gpio_prepareWriteConfig				(handler_joy, PUPDR_RESET_VALUE_PULL_DOWN);				// Set pulldown resistors
 	gpio_writeConfig   					(handler_joy);
 
 }

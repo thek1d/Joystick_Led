@@ -8,7 +8,7 @@
 #ifndef SRC_MACROS_H_
 #define SRC_MACROS_H_
 
-#define HIGH	   1
+#define LOW	   	   0
 #define IS_PRESSED 1
 
 #define TRUE  1
@@ -21,6 +21,9 @@
 // LED
 #define ON  1
 #define OFF 0
+
+// Reset PUPDR
+#define RESET_VAL_PUPDR_PRT_A	0x64000000
 
 // Pull down resistors
 #define PULLD_OFF 0b0

@@ -27,8 +27,8 @@ int main(void)
 	  led_r.color = LED_RED;
 	  led_r.mode  = OUT;
 
-	  led_r.color = LED_GREEN;
-	  led_r.mode  = OUT;
+	  led_g.color = LED_GREEN;
+	  led_g.mode  = OUT;
 
 	  joystick.mode = IN;
 

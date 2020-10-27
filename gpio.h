@@ -13,6 +13,9 @@
 #include "addresses.h"
 #include "macros.h"
 
+#define MODER_RESET_VALUE_OUTPUT 	1
+#define PUPDR_RESET_VALUE_PULL_DOWN 2
+
 typedef enum LED
 {
 	LED_GREEN,
