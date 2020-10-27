@@ -4,10 +4,7 @@
  *  Created on: Oct 21, 2020
  *      Author: thek1d
  */
-#include <stddef.h>
 #include "gpio.h"
-#include "addresses.h"
-#include "macros.h"
 
 
 /* "HAL services" */

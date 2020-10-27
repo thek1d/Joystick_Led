@@ -18,7 +18,6 @@
  */
 
 #include "gpio.h"
-#include "macros.h"
 
 int main(void)
 {

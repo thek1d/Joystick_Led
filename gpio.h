@@ -9,6 +9,9 @@
 #define GPIO_H_
 
 #include <stdint.h>
+#include <stddef.h>
+#include "addresses.h"
+#include "macros.h"
 
 typedef enum LED
 {
