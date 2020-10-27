@@ -10,11 +10,6 @@
 
 #include <stdint.h>
 
-#define HIGH	   1
-#define IS_PRESSED 1
-
-#define READ(p) ((*((uint16_t *)(handler_joy->_register)))&((1)<<(p)))
-
 typedef enum LED
 {
 	LED_GREEN,

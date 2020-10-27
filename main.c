@@ -18,10 +18,11 @@
  */
 
 #include "gpio.h"
+#include "macros.h"
 
 int main(void)
 {
-	 GPIO_HANDLER_LED_t 		led_r 	 = {0}, led_g = {0};
+	  GPIO_HANDLER_LED_t 		led_r 	 = {0}, led_g = {0};
 	  GPIO_HANDLER_JOYSTICK_t	joystick = {0};
 
 	  led_r.color = LED_RED;
